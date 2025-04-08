@@ -1,0 +1,29 @@
+{% extends 'qa/base.html' %}
+{% block content %}
+<h3>{{ question.title }}</h3>
+<p>{{ question.body }}</p>
+<hr>
+<h5>Answers:</h5>
+{% for a in question.answers.all %}
+    <div class="card my-2">
+        <div class="card-body">
+            <p>{{ a.content }}</p>
+            <small>by {{ a.user.username }}</small>
+            <form method="post" action="{% url 'like_answer' a.id %}">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-primary">Like ({{ a.like_set.count }})</button>
+            </form>
+        </div>
+    </div>
+{% empty %}
+    <p>No answers yet.</p>
+{% endfor %}
+{% if user.is_authenticated %}
+<hr>
+<form method="post">
+    {% csrf_token %}
+    <textarea name="content" rows="3" class="form-control" placeholder="Your Answer"></textarea><br>
+    <button class="btn btn-success">Submit Answer</button>
+</form>
+{% endif %}
+{% endblock %}
